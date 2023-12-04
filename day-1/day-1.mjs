@@ -1,8 +1,4 @@
-import fs from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-const filePath = `${path.dirname(fileURLToPath(import.meta.url))}/input.txt`;
-const fileResult = fs.readFileSync(filePath).toString()
+import { getDayInput } from "../utils/getDayInput.mjs";
 
 function getAllPossibleStringCombinations(str) {
   let combinations = [];
@@ -130,7 +126,9 @@ function getStringFinalSum(string) {
     .reduce((acc, item) => acc + item, 0)
 }
 
-const finalResult = getStringFinalSum(fileResult)
-console.log(finalResult)
+export default function getAnswer() {
+  const fileResult = getDayInput(import.meta)
+  return getStringFinalSum(fileResult)
+}
 
 
