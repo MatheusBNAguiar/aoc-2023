@@ -48,13 +48,11 @@ function isNumber(digit) {
 }
 
 function getPart2Answer({ baseArray, matrixArray }) {
-  let iterationCount = 0;
   let baseSum = 0;
   for (let arrayLine = 0; arrayLine < baseArray.length; arrayLine++) {
     let lineValue = baseArray[arrayLine];
 
     lineValue.match(/\*+/gm)?.forEach(gearOnLine => {
-      iterationCount += 1;
       const gearPosition = lineValue.indexOf(gearOnLine);
       const { xMin, xMax, yMin, yMax } = getMatrixBoundaries(gearPosition, arrayLine);
 
