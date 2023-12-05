@@ -1,4 +1,3 @@
-import { getArraySum } from "../utils/getArraySum.mjs";
 import { getDayInput } from "../utils/getDayInput.mjs";
 
 export default function getAnswer() {
@@ -6,35 +5,33 @@ export default function getAnswer() {
   const baseArray = fileResult.split('\n');
   const matrixArray = baseArray.map(i => i.split(''));
 
-  const numbersNextToDigits = [];
+  let baseSum = 0;
 
   for (let arrayLine = 0; arrayLine < baseArray.length; arrayLine++) {
-    const lineValue = baseArray[arrayLine]
+    let lineValue = baseArray[arrayLine]
     lineValue.match(/\d+/gm)?.forEach(numberOnLine => {
       const numberStart = lineValue.indexOf(numberOnLine);
 
       let numberFound = false;
       const leftBoundary = Math.max(numberStart - 1, 0);
-      const rightBoundary = numberStart + numberOnLine.length + 1;
+      const rightBoundary = numberStart + numberOnLine.length;
 
       const topBoundary = Math.max(arrayLine - 1, 0);
       const bottomBoundary = arrayLine + 1;
 
-      for (let squareX = leftBoundary; squareX <= rightBoundary; squareX++) {
-        for (let squareY = topBoundary; squareY <= bottomBoundary; squareY++) {
+      for (let squareY = topBoundary; squareY <= bottomBoundary && !numberFound; squareY++) {
+        for (let squareX = leftBoundary; squareX <= rightBoundary && !numberFound; squareX++) {
           const selectedDigit = matrixArray?.[squareY]?.[squareX];
-          if (selectedDigit && selectedDigit !== '.' && !/\.|\d+/.test(selectedDigit)) {
+          if (selectedDigit && !/\.|\d+/.test(selectedDigit)) {
+            baseSum += Number(numberOnLine);
             numberFound = true;
-            numbersNextToDigits.push(numberOnLine);
-            break;
           }
         }
-        if (numberFound) {
-          break;
-        }
       }
+
+      lineValue = lineValue.replace(numberOnLine, '.'.repeat(numberOnLine.length));
     });
   }
 
-  return getArraySum(numbersNextToDigits);
+  return baseSum;
 }
