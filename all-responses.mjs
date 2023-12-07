@@ -15,3 +15,6 @@ console.log(`Day 5 Answer: ${getDay5Answer()}`)
 
 import getDay6Answer from "./day-6/day-6.mjs";
 console.log(`Day 6 Answer: ${getDay6Answer()}`)
+
+import getDay7Answer from "./day-7/day-7.mjs";
+console.log(`Day 7 Answer: ${getDay7Answer()}`)
