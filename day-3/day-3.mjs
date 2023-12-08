@@ -2,9 +2,9 @@ import { getDayInput } from "../utils/getDayInput.mjs";
 import { getArrayPower } from "../utils/getArrayPower.mjs";
 
 function getReferences() {
-  const fileResult = getDayInput(import.meta)
-  const baseArray = fileResult.split('\n');
-  const matrixArray = baseArray.map(i => i.split(''));
+  const fileResult = getDayInput(import.meta);
+  const baseArray = fileResult.split("\n");
+  const matrixArray = baseArray.map(i => i.split(""));
   return { baseArray, matrixArray };
 }
 
@@ -20,7 +20,7 @@ function getMatrixBoundaries(characterXPos, characterYPos, characterLength = 1) 
 function getPart1Answer({ baseArray, matrixArray }) {
   let baseSum = 0;
   for (let arrayLine = 0; arrayLine < baseArray.length; arrayLine++) {
-    let lineValue = baseArray[arrayLine]
+    let lineValue = baseArray[arrayLine];
     lineValue.match(/\d+/gm)?.forEach(numberOnLine => {
       const numberStart = lineValue.indexOf(numberOnLine);
       const { xMin, xMax, yMin, yMax } = getMatrixBoundaries(numberStart, arrayLine, numberOnLine.length);
@@ -36,7 +36,7 @@ function getPart1Answer({ baseArray, matrixArray }) {
         }
       }
 
-      lineValue = lineValue.replace(numberOnLine, '.'.repeat(numberOnLine.length));
+      lineValue = lineValue.replace(numberOnLine, ".".repeat(numberOnLine.length));
     });
   }
 
@@ -61,7 +61,6 @@ function getPart2Answer({ baseArray, matrixArray }) {
         for (let squareX = xMin; squareX <= xMax; squareX++) {
           const selectedDigit = matrixArray?.[squareY]?.[squareX];
           if (isNumber(selectedDigit)) {
-
             //Lookup for number
             let baseNumber = selectedDigit;
             const numberLine = matrixArray?.[squareY];
@@ -95,7 +94,7 @@ function getPart2Answer({ baseArray, matrixArray }) {
         baseSum += getArrayPower(numbersOnGear);
       }
 
-      lineValue = lineValue.replace(gearOnLine, '.');
+      lineValue = lineValue.replace(gearOnLine, ".");
     });
   }
   return baseSum;

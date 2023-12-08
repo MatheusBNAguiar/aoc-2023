@@ -1,0 +1,27 @@
+{
+  "name": "aoc-2023",
+  "version": "1.0.0",
+  "description": "Advent of Code 2023 Answers",
+  "scripts": {
+    "format": "prettier . --write",
+    "prepare": "husky install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MatheusBNAguiar/aoc-2023.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MatheusBNAguiar/aoc-2023/issues"
+  },
+  "homepage": "https://github.com/MatheusBNAguiar/aoc-2023#readme",
+  "devDependencies": {
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0",
+    "prettier": "3.1.0"
+  },
+  "lint-staged": {
+    "**/*": "npm run format"
+  }
+}

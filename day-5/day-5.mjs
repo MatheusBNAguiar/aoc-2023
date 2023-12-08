@@ -1,7 +1,7 @@
 import { getDayInput } from "../utils/getDayInput.mjs";
 
 function getSeedMap() {
-  const fileResult = getDayInput(import.meta).match(/.+\:([\s\d])+/gm)
+  const fileResult = getDayInput(import.meta).match(/.+\:([\s\d])+/gm);
   const regex = /.+\:([\s\d])+/gm;
 
   const baseMap = {};
@@ -12,10 +12,16 @@ function getSeedMap() {
       regex.lastIndex++;
     }
     // The result can be accessed through the `m`-variable.
-    m.forEach((matchString) => {
+    m.forEach(matchString => {
       if (matchString.trim()) {
-        const mapKey = matchString.match(/[\D]+:/)[0].replace(/\,|\:|map/gi, '').trim();
-        const values = matchString.match(/[\d|\s]+/gm).map(str => str.trim().split('\n').filter(Boolean)).filter(item => item.length)[0];
+        const mapKey = matchString
+          .match(/[\D]+:/)[0]
+          .replace(/\,|\:|map/gi, "")
+          .trim();
+        const values = matchString
+          .match(/[\d|\s]+/gm)
+          .map(str => str.trim().split("\n").filter(Boolean))
+          .filter(item => item.length)[0];
         baseMap[mapKey] = values;
       }
     });
@@ -23,12 +29,12 @@ function getSeedMap() {
 
   const { seeds, ...maps } = baseMap;
 
-  const seedsArray = seeds[0].split(' ');
+  const seedsArray = seeds[0].split(" ");
   const mapObject = Object.entries(maps).reduce((acc, [key, entries]) => {
     acc[key] = entries
-      .map(a => a.split(' '))
+      .map(a => a.split(" "))
       .sort((a, b) => Number(a[1]) - Number(b[1]))
-      .map(((([newInitLocation, init, offset]) => [Number(init), Number(offset) + Number(init) - 1, Number(newInitLocation)])));
+      .map(([newInitLocation, init, offset]) => [Number(init), Number(offset) + Number(init) - 1, Number(newInitLocation)]);
     return acc;
   }, {});
 
@@ -37,8 +43,8 @@ function getSeedMap() {
 
 function getLocationFromSeed(seedValue, mapObject) {
   let finalValue = seedValue;
-  Object.values(mapObject).forEach((mappedReferences) => {
-    const foundMapping = mappedReferences.find(([lowerBoundary, higherBoundary]) => finalValue >= lowerBoundary && finalValue <= higherBoundary)
+  Object.values(mapObject).forEach(mappedReferences => {
+    const foundMapping = mappedReferences.find(([lowerBoundary, higherBoundary]) => finalValue >= lowerBoundary && finalValue <= higherBoundary);
     if (foundMapping) {
       const [lowerBoundary, _hb, offset] = foundMapping;
       finalValue = finalValue - lowerBoundary + offset;
@@ -51,10 +57,10 @@ function getLocationFromSeed(seedValue, mapObject) {
 function getMinimuValueFromTransposedLocations(seedArray, mapObject) {
   let referenceArray = seedArray;
   let minValue;
-  referenceArray.forEach((seedValue) => {
+  referenceArray.forEach(seedValue => {
     const minimumOnInterval = getLocationFromSeed(seedValue, mapObject);
     minValue = Math.min(minValue || minimumOnInterval, minimumOnInterval);
-  })
+  });
   return minValue;
 }
 
@@ -70,7 +76,7 @@ function getPart2Answer({ seedsArray, mapObject }) {
     if (index % 2 === 0) {
       reference = number;
     } else {
-      console.log(number, index)
+      console.log(number, index);
       for (let offset = 0; offset < number; offset++) {
         const minimumOnInterval = getLocationFromSeed(reference + offset, mapObject);
         minValue = Math.min(minValue || minimumOnInterval, minimumOnInterval);
@@ -121,5 +127,8 @@ function getPart2Answer({ seedsArray, mapObject }) {
 export default function getAnswer() {
   const { seedsArray, mapObject } = getSeedMap();
 
-  return `Part 1: ${getPart1Answer({ seedsArray, mapObject })} Part 2: ${getPart2Answer({ seedsArray, mapObject })}`
+  return `Part 1: ${getPart1Answer({
+    seedsArray,
+    mapObject,
+  })} Part 2: ${getPart2Answer({ seedsArray, mapObject })}`;
 }

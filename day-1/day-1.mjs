@@ -112,23 +112,22 @@ function getStringWithConvertedNumbers(string) {
     ninetyseven: 97,
     ninetyeight: 98,
     ninetynine: 99,
-    hundred: 100
+    hundred: 100,
   };
   return getAllPossibleStringCombinations(string)
     .map(partialString => Number(partialString) || Number(numberMapping[partialString]))
-    .join('');
+    .join("");
 }
 
 function getStringFinalSum(string) {
-  return string.split("\n")
+  return string
+    .split("\n")
     .map(string => getStringWithConvertedNumbers(string).replace(/[a-zA-Z]+/gi, ""))
-    .map((item) => Number(`${item.slice(0, 1)}${item.slice(-1)}`))
-    .reduce((acc, item) => acc + item, 0)
+    .map(item => Number(`${item.slice(0, 1)}${item.slice(-1)}`))
+    .reduce((acc, item) => acc + item, 0);
 }
 
 export default function getAnswer() {
-  const fileResult = getDayInput(import.meta)
-  return getStringFinalSum(fileResult)
+  const fileResult = getDayInput(import.meta);
+  return getStringFinalSum(fileResult);
 }
-
-

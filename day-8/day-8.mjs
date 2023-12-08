@@ -1,9 +1,10 @@
 import { getDayInput } from "../utils/getDayInput.mjs";
+import { getLCMFromArray } from "../utils/getLCMFromArray.mjs";
 
 function getInstructionsAndMap() {
   const fileString = getDayInput(import.meta);
-  const fileArray = fileString.split('\n').filter(Boolean);
-  const instructions = fileArray.shift()
+  const fileArray = fileString.split("\n").filter(Boolean);
+  const instructions = fileArray.shift();
   const regex = /(\w+) = \((\w+), (\w+)\)/gm;
 
   const patternMap = new Map();
@@ -21,7 +22,7 @@ function getInstructionsAndMap() {
   return { instructions, patternMap, fileString };
 }
 
-function getStepsToAchieveBreakCondition({ initValue, instructions, patternMap, getBreakCondition = (x) => true }) {
+function getStepsToAchieveBreakCondition({ initValue, instructions, patternMap, getBreakCondition = x => true }) {
   let lookupValue = initValue;
   let directionsIndex = 0;
   let lookupCount = 0;
@@ -38,48 +39,29 @@ function getStepsToAchieveBreakCondition({ initValue, instructions, patternMap, 
   return lookupCount;
 }
 
-function getLCMFromArray(numberArray) {
-  function gcd(a, b) {
-    for (let temp = b; b !== 0;) {
-      b = a % b;
-      a = temp;
-      temp = b;
-    }
-    return a;
-  }
-
-  function lcmFunction(a, b) {
-    const gcdValue = gcd(a, b);
-    return (a * b) / gcdValue;
-  }
-
-  return numberArray.reduce((acc, b) => lcmFunction(acc, b), numberArray[0]);
-}
-
 function getPart1Answer(instructions, patternMap) {
   return getStepsToAchieveBreakCondition({
-    initValue: 'AAA',
+    initValue: "AAA",
     instructions,
     patternMap,
     getBreakCondition(x) {
-      return x !== 'ZZZ';
-    }
+      return x !== "ZZZ";
+    },
   });
 }
 
 function getPart2Answer(instructions, patternMap, fileString) {
   return getLCMFromArray(
-    fileString
-      .match(/^(\w\wA)/gm)
-      .map((initValue) =>
-        getStepsToAchieveBreakCondition({
-          initValue,
-          instructions,
-          patternMap,
-          getBreakCondition(x) {
-            return x[2] !== 'Z';
-          }
-        }))
+    fileString.match(/^(\w\wA)/gm).map(initValue =>
+      getStepsToAchieveBreakCondition({
+        initValue,
+        instructions,
+        patternMap,
+        getBreakCondition(x) {
+          return x[2] !== "Z";
+        },
+      }),
+    ),
   );
 }
 

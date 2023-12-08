@@ -1,5 +1,5 @@
 import { getDayInput } from "../utils/getDayInput.mjs";
-import { getArrayPower } from '../utils/getArrayPower.mjs';
+import { getArrayPower } from "../utils/getArrayPower.mjs";
 
 function getInequationIntervals(timeLimit, timeToSurpass) {
   /*
@@ -27,14 +27,13 @@ function getInequationIntervals(timeLimit, timeToSurpass) {
 */
 
   const discriminant = Math.sqrt(Math.pow(timeLimit, 2) - 4 * timeToSurpass);
-  return [
-    Math.floor((timeLimit - discriminant) / 2),
-    Math.ceil((timeLimit + discriminant) / 2)
-  ];
+  return [Math.floor((timeLimit - discriminant) / 2), Math.ceil((timeLimit + discriminant) / 2)];
 }
 
 function getTestsPair(fileString) {
-  return fileString.split('\n').map(string => string.match(/\d+/g))
+  return fileString
+    .split("\n")
+    .map(string => string.match(/\d+/g))
     .filter(Boolean)
     .reduce((acc, items) => {
       for (let index = 0; index < items.length; index++) {
@@ -46,23 +45,23 @@ function getTestsPair(fileString) {
 }
 
 function getPart1Answer(fileResult) {
-  return (
-    getArrayPower(
-      getTestsPair(fileResult)
-        .map(([timeLimit, timeToSurpass]) => getInequationIntervals(timeLimit, timeToSurpass))
-        .map(([tpMin, tpMax]) => (tpMax - tpMin - 1)))
+  return getArrayPower(
+    getTestsPair(fileResult)
+      .map(([timeLimit, timeToSurpass]) => getInequationIntervals(timeLimit, timeToSurpass))
+      .map(([tpMin, tpMax]) => tpMax - tpMin - 1),
   );
 }
 
 function getPart2Answer(fileResult) {
-  const [timeLimit, timeToSurpass] = fileResult.split('\n')
+  const [timeLimit, timeToSurpass] = fileResult
+    .split("\n")
     .filter(Boolean)
-    .map(string => Number(string.replace(/\D/g, '')));
+    .map(string => Number(string.replace(/\D/g, "")));
   const [tpMin, tpMax] = getInequationIntervals(timeLimit, timeToSurpass);
   return tpMax - tpMin - 1;
 }
 
 export default function getAnswer() {
-  const fileResult = getDayInput(import.meta)
-  return `Part 1: ${getPart1Answer(fileResult)} Part 2: ${getPart2Answer(fileResult)}`
+  const fileResult = getDayInput(import.meta);
+  return `Part 1: ${getPart1Answer(fileResult)} Part 2: ${getPart2Answer(fileResult)}`;
 }
