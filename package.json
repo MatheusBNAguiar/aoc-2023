@@ -4,6 +4,7 @@
   "description": "Advent of Code 2023 Answers",
   "scripts": {
     "format": "prettier . --write",
+    "init-day": "node scripts/init-day.mjs",
     "prepare": "husky install"
   },
   "repository": {
