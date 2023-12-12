@@ -5,11 +5,12 @@ import { fileURLToPath } from "node:url";
 import { execSync } from "node:child_process";
 
 const filePath = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
+
 const lastFolder = fs
   .readdirSync(filePath)
   .filter(path => path.match(/day\-\d/))
-  .slice(-1)[0]
-  .slice(-1);
+  .map(a => a.replace("day-", ""))
+  .sort((a, b) => Number(b) - Number(a))[0];
 
 const newFolder = Number(lastFolder) + 1;
 
