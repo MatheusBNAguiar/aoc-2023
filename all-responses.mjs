@@ -21,3 +21,9 @@ console.log(`Day 7 Answer: ${getDay7Answer()}`);
 
 import getDay8Answer from "./day-8/day-8.mjs";
 console.log(`Day 8 Answer: ${getDay8Answer()}`);
+
+import getDay9Answer from "./day-9/day-9.mjs";
+console.log(`Day 9 Answer: ${getDay9Answer()}`);
+
+import getDay11Answer from "./day-11/day-11.mjs";
+console.log(`Day 11 Answer: ${getDay11Answer()}`);

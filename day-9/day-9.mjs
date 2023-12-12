@@ -70,5 +70,3 @@ export default function getAnswer() {
 
   return `Part 1: ${getPart1Answer(fileArray)} Part 2: ${getPart2Answer(fileArray)}`;
 }
-
-console.log(getAnswer());
