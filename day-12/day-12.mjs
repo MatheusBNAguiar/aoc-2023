@@ -1,69 +1,73 @@
 import { getArraySum } from "../utils/getArraySum.mjs";
 import { getDayInput } from "../utils/getDayInput.mjs";
 
-function areArraysEquals(arr1, arr2) {
-  if (arr1.length != arr2.length) {
-    return false;
-  }
-  return !arr1.find((value, index) => value !== arr2[index]);
+function memoize(func) {
+  const stored = new Map();
+  return (...args) => {
+    const k = JSON.stringify(args);
+    if (stored.has(k)) {
+      return stored.get(k);
+    }
+    const result = func(...args);
+    stored.set(k, result);
+    return result;
+  };
 }
 
-function getShouldProgressWithNextIteration(newString, targetedCombination) {
-  const matchesWithWildcard = newString.match(/(\#)+/gm)?.map(str => str.length);
-  if (matchesWithWildcard?.find((value, index) => value > targetedCombination[index])) {
-    return false;
+const getNumberOfCombinations = memoize((stringToMatch, targetedCombination) => {
+  if (stringToMatch.length === 0) {
+    if (targetedCombination.length === 0) {
+      return 1;
+    }
+    return 0;
   }
-  if (matchesWithWildcard?.filter((value, index) => value !== targetedCombination[index]).length > 2) {
-    return false;
-  }
-
-  return true;
-}
-
-function isAlreadyMatched(newString, targetedCombination) {
-  const matchesWithWildcard = newString.match(/(\#)+/gm)?.map(str => str.length);
-  return matchesWithWildcard && areArraysEquals(targetedCombination, matchesWithWildcard);
-}
-
-function getNumberOfCombinations(stringToMatch, targetedCombination) {
-  let counter = 0;
-  const iterateOverCombinationMatch = wildcardString => {
-    const indexOfWildcard = wildcardString.indexOf("?");
-    if (indexOfWildcard === -1) {
-      if (
-        wildcardString.match(/(\#)+/gm) &&
-        areArraysEquals(
-          targetedCombination,
-          wildcardString.match(/(\#)+/gm).map(str => str.length),
-        )
-      ) {
-        counter += 1;
-        return;
-      }
-    } else {
-      const partialString = wildcardString.slice(0, indexOfWildcard);
-      if (getShouldProgressWithNextIteration(`${partialString}`, targetedCombination)) {
-        iterateOverCombinationMatch(`${partialString}#${wildcardString.slice(indexOfWildcard + 1)}`);
-        iterateOverCombinationMatch(`${partialString}.${wildcardString.slice(indexOfWildcard + 1)}`);
+  if (targetedCombination.length === 0) {
+    for (let i = 0; i < stringToMatch.length; i++) {
+      if (stringToMatch[i] === "#") {
+        return 0;
       }
     }
-  };
-  iterateOverCombinationMatch(stringToMatch);
-  return counter;
-}
+    return 1;
+  }
+
+  if (stringToMatch.length < getArraySum(targetedCombination) + targetedCombination.length - 1) {
+    // The line is not long enough for all runs
+    return 0;
+  }
+
+  // Reduce subset to work with
+  if (stringToMatch[0] === ".") {
+    return getNumberOfCombinations(stringToMatch.slice(1), targetedCombination);
+  }
+
+  if (stringToMatch[0] === "#") {
+    const [run, ...leftoverRuns] = targetedCombination;
+    for (let i = 0; i < run; i++) {
+      // Does not complete the number of runs required
+      if (stringToMatch[i] === ".") {
+        return 0;
+      }
+    }
+    // Went too far on the combination
+    if (stringToMatch[run] === "#") {
+      return 0;
+    }
+
+    return getNumberOfCombinations(stringToMatch.slice(run + 1), leftoverRuns);
+  }
+
+  // Is a ? and we will fill the next ones
+  return getNumberOfCombinations(`#${stringToMatch.slice(1)}`, targetedCombination) + getNumberOfCombinations(`.${stringToMatch.slice(1)}`, targetedCombination);
+});
 
 function getPart1Answer(fileArray) {
-  const t0 = performance.now();
-  const sumValue = getArraySum(
+  return getArraySum(
     fileArray.map(str => {
       const [pattern, combination] = str.split(" ");
       const numberCombinations = getNumberOfCombinations(pattern, combination.split(",").map(Number));
       return numberCombinations;
     }),
   );
-  const t1 = performance.now();
-  console.log("getPart1Answer took " + (t1 - t0) + " milliseconds.");
-  return sumValue;
 }
 
 function unfoldString(str) {
@@ -72,18 +76,13 @@ function unfoldString(str) {
 }
 
 function getPart2Answer(fileArray) {
-  const t0 = performance.now();
-
-  const finalSum = getArraySum(
+  return getArraySum(
     fileArray.map((str, index) => {
       const [pattern, combination] = unfoldString(str);
       console.log(index);
       return getNumberOfCombinations(pattern, combination);
     }),
   );
-  const t1 = performance.now();
-  console.log("getPart2Answer took " + (t1 - t0) + " milliseconds.");
-  return finalSum;
 }
 
 export default function getAnswer() {
@@ -92,9 +91,3 @@ export default function getAnswer() {
     .filter(Boolean);
   return `Part 1: ${getPart1Answer(fileArray)} Part 2: ${getPart2Answer(fileArray)}`;
 }
-
-console.log(getAnswer());
-
-// ???.### 1, 1, 3
-
-//   ???.### ????.### ????.### ????.### ????.### 1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3
