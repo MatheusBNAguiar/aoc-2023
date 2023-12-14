@@ -1,7 +1,7 @@
 import { getDayInput } from "../utils/getDayInput.mjs";
 import { getArraySum } from "../utils/getArraySum.mjs";
+import { getTransposedMatrix } from "../utils/getTransposedMatrix.mjs";
 
-const getTransposedMatrix = matrix => matrix[0].map((_, colIndex) => matrix.map(row => row[colIndex]));
 const subtractStrings = (str1, str2) =>
   str1
     .split("")
@@ -14,12 +14,10 @@ function getReflectionPosition(stringArray, onlySmudge = false) {
 
   let reflectionIndex = 0;
   let isReflection = false;
-  let hasSmudgeOnReflection = false;
 
   while (reflectionIndex < stringArray.length - 1 && !isReflection) {
     const centerLeft = stringArray[reflectionIndex];
     const centerRight = stringArray[reflectionIndex + 1];
-    hasSmudgeOnReflection = hasSmudgeOnReflection || hasSmudge(centerLeft, centerRight);
     let smudgeCount = hasSmudge(centerLeft, centerRight) ? 1 : 0;
 
     if (centerLeft === centerRight || hasSmudge(centerLeft, centerRight)) {
