@@ -1,18 +1,6 @@
 import { getArraySum } from "../utils/getArraySum.mjs";
 import { getDayInput } from "../utils/getDayInput.mjs";
-
-function memoize(func) {
-  const stored = new Map();
-  return (...args) => {
-    const k = JSON.stringify(args);
-    if (stored.has(k)) {
-      return stored.get(k);
-    }
-    const result = func(...args);
-    stored.set(k, result);
-    return result;
-  };
-}
+import { memoize } from "../utils/memoize.mjs";
 
 const getNumberOfCombinations = memoize((stringToMatch, targetedCombination) => {
   if (stringToMatch.length === 0) {
