@@ -1,5 +1,4 @@
 import { getDayInput } from "../utils/getDayInput.mjs";
-import { getArraySum } from "../utils/getArraySum.mjs";
 
 const DIRECTIONS = {
   RIGHT: [1, 0],
@@ -40,7 +39,7 @@ function getClosedLoopArray(lineArray) {
 
   const startCoordinates = getStartIndex(lineArray);
 
-  const queue = [DIRECTIONS.RIGHT].map(([xOffset, yOffset]) => [[startCoordinates[0] + xOffset, startCoordinates[1] + yOffset], 0, startCoordinates]);
+  const queue = DIRECTIONS_ARRAY.map(([xOffset, yOffset]) => [[startCoordinates[0] + xOffset, startCoordinates[1] + yOffset], 0, startCoordinates]);
 
   while (queue.length > 0) {
     const [initCoordinates, counter, origin] = queue.shift();
@@ -62,7 +61,7 @@ function getClosedLoopArray(lineArray) {
 }
 
 function getPart1Answer(getClosedLoopArray) {
-  return Math.ceil(getClosedLoopArray.reduce((acc, items) => Math.max(acc, ...items.filter(Boolean)), Number.MIN_VALUE) / 2);
+  return Math.ceil(getClosedLoopArray.reduce((acc, items) => Math.max(acc, ...items.filter(Boolean)), Number.MIN_VALUE));
 }
 
 const OUTSIDE_CHARACTER = "_";
@@ -118,36 +117,13 @@ function getInLoopValues(pipedList) {
 }
 
 function getPart2Answer(closedLoop, fileResult) {
-  const trimmedList = closedLoop
-    .map(str => str.map(value => (value === undefined ? INSIDE_CHARACTER : "*")).join(""))
-    .map(str => str.replace(/^\s+|\s+$/g, match => OUTSIDE_CHARACTER.repeat(match.length)))
-    .map(str => str.split(""));
-
-  while (true) {
-    let alteredTitles = 0;
-    for (let listLine = 0; listLine < trimmedList.length; listLine++) {
-      const line = trimmedList[listLine];
-      for (let characterPosition = line.indexOf(INSIDE_CHARACTER); characterPosition !== -1 && characterPosition < line.length; characterPosition++) {
-        const character = line[characterPosition];
-        if (character === INSIDE_CHARACTER) {
-          const outOfLoopCharacter = DIRECTIONS_ARRAY.find(
-            ([xOffset, yOffset]) =>
-              OUTSIDE_CHARACTER === trimmedList[listLine + yOffset]?.[characterPosition + xOffset] || trimmedList[listLine + yOffset]?.[characterPosition + xOffset] === undefined,
-          );
-          if (outOfLoopCharacter) {
-            trimmedList[listLine][characterPosition] = OUTSIDE_CHARACTER;
-            alteredTitles += 1;
-          }
-        }
-      }
-    }
-    if (alteredTitles === 0) {
-      break;
-    }
-  }
-
-  const pipedList = trimmedList.map((str, lineIndex) => str.map((value, charIndex) => (value === "*" ? fileResult[lineIndex][charIndex] : value)));
-  return getInLoopValues(pipedList);
+  return getInLoopValues(
+    closedLoop
+      .map(str => str.map(value => (value === undefined ? INSIDE_CHARACTER : "*")).join(""))
+      .map(str => str.replace(/^\s+|\s+$/g, match => OUTSIDE_CHARACTER.repeat(match.length)))
+      .map(str => str.split(""))
+      .map((str, lineIndex) => str.map((value, charIndex) => (value === "*" ? fileResult[lineIndex][charIndex] : value))),
+  );
 }
 
 export default function getAnswer() {
@@ -158,3 +134,5 @@ export default function getAnswer() {
 
   return `Part 1: ${getPart1Answer(closedLoop)} Part 2: ${getPart2Answer(closedLoop, fileResult)}`;
 }
+
+console.log(getAnswer());
