@@ -2,6 +2,7 @@
   "name": "aoc-2023",
   "version": "1.0.0",
   "description": "Advent of Code 2023 Answers",
+  "type": "module",
   "scripts": {
     "format": "prettier . --write",
     "init-day": "node scripts/init-day.mjs",
@@ -24,5 +25,8 @@
   },
   "lint-staged": {
     "**/*": "npm run format"
+  },
+  "dependencies": {
+    "typescript": "^5.3.3"
   }
 }
