@@ -48,7 +48,55 @@ function getPart1Answer(inputs: Array<InputObject>, rulesObject: RuleDict) {
   return inputs.filter(input => isConditionValid(input, rulesObject["in"])).reduce((acc, item) => acc + getArraySum(Object.values(item)), 0);
 }
 
-function getPart2Answer(inputList, rulesObject) {}
+function getPart2Answer(rulesObject) {
+  const queue = [[{ x: [1, 4000], m: [1, 4000], a: [1, 4000], s: [1, 4000] }, rulesObject["in"]]];
+  const validatedItems = [] as Array<{ [key: string]: [number, number] }>;
+
+  while (queue.length > 0) {
+    //@ts-ignore: Ignore this
+    const [intervalObject, ruleArray] = queue.shift();
+    const [[conditionKey, conditionSymbol, conditionValue], ifCondition, elseCondition] = ruleArray;
+
+    const evaluateGroup = (inputValue, condition) => {
+      if (Array.isArray(condition)) {
+        return queue.push([inputValue, condition]);
+      } else {
+        if (condition === "A") {
+          validatedItems.push(inputValue);
+          return;
+        } else if (condition === "R") {
+          return;
+        }
+        return queue.push([inputValue, rulesObject[condition]]);
+      }
+    };
+
+    const baseObject = structuredClone(intervalObject);
+    const [lowerBound, higherBound] = intervalObject[conditionKey];
+    if (conditionSymbol === ">") {
+      if (higherBound > conditionValue && lowerBound > conditionValue) {
+        evaluateGroup(baseObject, ifCondition);
+      } else if (higherBound > conditionValue && lowerBound < conditionValue) {
+        evaluateGroup(Object.assign(baseObject, { [conditionKey]: [conditionValue + 1, higherBound] }), ifCondition);
+        evaluateGroup(Object.assign(baseObject, { [conditionKey]: [lowerBound, conditionValue] }), elseCondition);
+      } else {
+        evaluateGroup(baseObject, elseCondition);
+      }
+    }
+    if (conditionSymbol === "<") {
+      if (lowerBound < conditionValue && higherBound < conditionValue) {
+        evaluateGroup(baseObject, ifCondition);
+      } else if (lowerBound < conditionValue && higherBound > conditionValue) {
+        evaluateGroup(Object.assign(baseObject, { [conditionKey]: [lowerBound, conditionValue - 1] }), ifCondition);
+        evaluateGroup(Object.assign(baseObject, { [conditionKey]: [conditionValue, higherBound] }), elseCondition);
+      } else {
+        evaluateGroup(baseObject, elseCondition);
+      }
+    }
+  }
+
+  return validatedItems.reduce((acc, items) => acc + Object.values(items).reduce((acc, [min, max]) => acc * (max - min + 1), 1), 0);
+}
 
 export default function getAnswer() {
   const [rules, inputs] = getDayInput(import.meta)
@@ -61,7 +109,7 @@ export default function getAnswer() {
     .map(str => JSON.parse(str.replace(/\=/g, '":').replace(/\{/g, '{"').replace(/\,/g, ',"')));
   const rulesObject = getConditionRules(rules);
 
-  return `Part 1: ${getPart1Answer(inputList, rulesObject)} Part 2: ${getPart2Answer(inputList, rulesObject)}`;
+  return `Part 1: ${getPart1Answer(inputList, rulesObject)} Part 2: ${getPart2Answer(rulesObject)}`;
 }
 
 console.log(getAnswer());
