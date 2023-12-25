@@ -16,4 +16,4 @@ const newFolder = Number(lastFolder) + 1;
 
 execSync(`mkdir ${filePath}/day-${newFolder}`);
 execSync(`cp -R ${filePath}/day-x/. ${filePath}/day-${newFolder}`);
-execSync(`mv ${filePath}/day-${newFolder}/day-x.mjs ${filePath}/day-${newFolder}/day-${newFolder}.mjs`);
+execSync(`mv ${filePath}/day-${newFolder}/day-x.ts ${filePath}/day-${newFolder}/day-${newFolder}.ts`);
