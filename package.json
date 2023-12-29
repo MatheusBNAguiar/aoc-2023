@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "z3-solver": "^4.12.4"
   }
 }
